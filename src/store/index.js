@@ -2,9 +2,11 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import auth from './auth'
 import firebase from 'firebase/app'
-import { register } from 'register-service-worker';
+
+//import { register } from 'register-service-worker';
 
 import info from './info'
+import category from './category'
 
 Vue.use(Vuex)
 
@@ -25,7 +27,14 @@ export default new Vuex.Store({
     error: s => s.error
   },
   actions: {
-    async login({dispatch, commit}, {email,password}) {
+    
+    async fetchCurrency() {
+      const key = '0355a5653a3136702b05ba0bdf7d6486' //process.env.VUE_APP_FIXER
+      const res = await fetch(`http://data.fixer.io/api/latest?access_key=${key}&symbols=USD,EUR,RUB`)
+      return await res.json()
+    },
+
+    async login({ commit}, {email,password}) {
       try {
           await firebase.auth().signInWithEmailAndPassword(email, password)
       } catch (e) {
@@ -58,6 +67,6 @@ export default new Vuex.Store({
     }
   },
   modules: {
-    auth, info
+    auth, info , category
   }
 })
